@@ -1,0 +1,17 @@
+@import '~mdb-ui-kit/css/mdb.min.css';
+@import '~bootstrap/dist/css/bootstrap.css';
+
+.category {
+    border: 2px solid lightblue;
+    border-radius: 5px;
+}
+.item {
+    display: flex;
+    justify-content: space-between;
+}
+.alert {
+    padding: 0.3rem 0.3rem;
+}
+.del:hover {
+    cursor: pointer;
+}

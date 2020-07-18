@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>MDB Webpack Starter</title>
+    <!-- Favicon -->
+    <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+    <!-- Google Fonts Roboto -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+    />
+    <!-- Main css file -->
+    <link rel="stylesheet" href="css/index.min.css" />
+    <!-- Custom styles -->
+    <style></style>
+  </head>
+
+  <body>
+    <template id="itemTmpl">
+      <div class="alert alert-info" role="alert">
+        <div class="item">
+          <div class="item_name">pomidor</div>
+          <div class="del"><i class="fas fa-trash-alt"></i></div>
+        </div>
+      </div>
+    </template>
+
+    <nav class="navbar navbar-dark bg-primary">
+      <span class="navbar-brand mb-0 h1">Lista zakupów</span>
+    </nav>
+    <div class="container">
+      <div >
+        <div class="row">
+          <div class="form-group col-md-4">
+            <label for="item_name">Nazwa</label>
+            <input type="text" class="form-control" id="item_name" placeholder="name">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="count"> Ilość</label>
+            <input type="number" class="form-control" id="count">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="category">Kategorja</label>
+            <select class="form-control" id="category">
+              <option>warzywa</option>
+              <option>owoce</option>
+              <option>nabiał</option>
+              <option>pieczywo</option>
+              <option>artykuły higieniczne</option>
+              <option>ubranie</option>
+            </select>
+          </div>
+          <button id="add" class="btn btn-primary mb-2 ml-2 col-md-1">Dodaj</button>
+        </div>
+          <div class="lists row">
+            <div id="warzywa" class="category col-md-2">
+              <div class="head"><h5>warzywa</h5></div>
+            </div>
+            <div id="owoce" class="category col-md-2"> 
+              <div class="head"><h5>owoce</h5></div>
+            </div>
+            <div id="nabiał" class="category col-md-2">
+              <div class="head"><h5>nabiał</h5></div>
+            </div> 
+            <div id="wash" class="category col-md-2"> 
+              <div class="head"><h5>artykuły higieniczne</h5></div>
+            </div> 
+            <div id="pieczywo" class="category col-md-2">
+              <div class="head"><h5>pieczywo</h5></div>
+            </div> 
+            <div id="ubranie" class="category col-md-2">
+              <div class="head"><h5>ubranie</h5></div>
+            </div>
+          </div>
+          
+         
+        
+      </div>
+      
+    </div>
+    <!-- End your project here-->
+
+  </body>
+  <!-- Main js file -->
+  <script type="text/javascript" src="js/index.min.js"></script>
+  <!-- Custom scripts -->
+  <script type="text/javascript">
+  //items array
+  const shoppingItems = [];
+  //add item
+  add.onclick = function() {
+    let id =0;
+    while (shoppingItems.find(el => el.id===id)) id = Math.random()
+    shoppingItems.push({
+      id,
+      itemName: item_name.value,
+      category: category.value,
+      count: count.value
+    })
+    console.log(shoppingItems)
+    let element = document.createElement('div');
+    element.id = id;
+    element.innerHTML = itemTmpl.innerHTML;
+    element.getElementsByClassName('del')[0].addEventListener("click", (function(i){
+      return function(){
+        console.log(i)
+        console.log(event)
+        document.getElementById(i).remove()
+        event.stopPropagation()
+        shoppingItems.splice(shoppingItems.indexOf(shoppingItems.find(el => el.id === i)),1)
+        console.log(shoppingItems)
+      }
+    })(id))
+    let itemName = element.getElementsByClassName('item_name');
+    itemName[0].innerHTML = `${item_name.value} (${count.value})`;
+    let curList = document.getElementById(category.value)
+    curList.appendChild(element);
+  };
+  
+  </script>
+
+</html>
