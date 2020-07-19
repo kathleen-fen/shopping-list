@@ -101,6 +101,38 @@
   <script type="text/javascript" src="js/index.min.js"></script>
   <!-- Custom scripts -->
   <script type="text/javascript">
+
+  //drag and drop
+  document.addEventListener(`dragstart`, (evt) => {
+    evt.target.classList.add(`selected`);
+  })
+
+  document.addEventListener(`dragend`, (evt) => {
+    evt.target.classList.remove(`selected`);
+  });
+
+  let activeElement = null;
+  let currentElement = null;  
+
+  const listElements = document.getElementsByClassName('category');
+  listElements.forEach(tasksListElement => {
+    tasksListElement.addEventListener(`dragover`, (evt) => {
+      evt.preventDefault(); 
+      activeElement = document.querySelector(`.selected`);
+      currentElement = evt.target;
+    })
+
+    tasksListElement.addEventListener(`drop`, (evt) => {
+        const isMoveable = activeElement.parentElement !== currentElement;
+        if (!isMoveable) {
+          return;
+        }
+        currentElement.appendChild(activeElement)
+        activeElement = null
+        currentElement = null
+      })
+    })
+    
   //items array
   let shoppingItems = [];
   //save  list to localStorage
@@ -110,6 +142,7 @@
   //display item  
   const newItemToList = (item) => {
     let element = document.createElement('div');
+    element.draggable = true;
     element.id = item.id;
     element.innerHTML = itemTmpl.innerHTML;
     element.getElementsByClassName('del')[0].addEventListener("click", (function(i){
