@@ -21,6 +21,7 @@
   </head>
 
   <body>
+    <!-- temlate for item -->
     <template id="itemTmpl">
       <div class="alert alert-info" role="alert">
         <div class="item">
@@ -44,7 +45,6 @@
             <label for="count"> Ilość</label>
             <input type="number" class="form-control" id="count">
           </div>
-
           <div class="col-md-2 mesure" >
             <div class="form-check">
               <input class="form-check-input" type="radio" name="exampleRadios" id="items" value="option1" checked>
@@ -59,8 +59,6 @@
               </label>
             </div>
           </div>
-
-
           <div class="form-group col-md-4">
             <label for="category">Kategorja</label>
             <select class="form-control" id="category">
@@ -94,11 +92,7 @@
               <div class="head"><h5>ubranie</h5></div>
             </div>
           </div>
-          
-         
-        
       </div>
-      
     </div>
     <!-- End your project here-->
 
@@ -108,21 +102,15 @@
   <!-- Custom scripts -->
   <script type="text/javascript">
   //items array
-  const shoppingItems = [];
-  //add item
-  add.onclick = function() {
-    let id =0;
-    while (shoppingItems.find(el => el.id===id)) id = Math.random()
-    shoppingItems.push({
-      id,
-      itemName: item_name.value,
-      category: category.value,
-      count: count.value,
-      mesure: items.checked ? "szt" : "kg"
-    })
-    console.log(shoppingItems)
+  let shoppingItems = [];
+  //save  list to localStorage
+  const setShoppingItems = () => {
+        localStorage.setItem('shoppingItems', JSON.stringify(shoppingItems));
+    };
+  //display item  
+  const newItemToList = (item) => {
     let element = document.createElement('div');
-    element.id = id;
+    element.id = item.id;
     element.innerHTML = itemTmpl.innerHTML;
     element.getElementsByClassName('del')[0].addEventListener("click", (function(i){
       return function(){
@@ -131,17 +119,40 @@
         document.getElementById(i).remove()
         event.stopPropagation()
         shoppingItems.splice(shoppingItems.indexOf(shoppingItems.find(el => el.id === i)),1)
+        setShoppingItems();
         console.log(shoppingItems)
       }
-    })(id))
+    })(item.id))
     let itemName = element.getElementsByClassName('item_name');
-    itemName[0].innerHTML = `${item_name.value} (${count.value}${items.checked ? "szt" : "kg"})`;
-    
-    let curList = document.getElementById(category.value)
-   
+    itemName[0].innerHTML = `${item.itemName} (${item.count}${item.mesure})`;
+    let curList = document.getElementById(item.category)
     curList.appendChild(element);
+  }; 
+  //get  list from localStorage  
+  let getShoppingItems = () => {
+        if(localStorage.getItem('shoppingItems')) {
+          shoppingItems = JSON.parse(localStorage.getItem('shoppingItems'));  
+        } 
+        shoppingItems.forEach(newItemToList);
+    };
+  // array from localStorage
+  getShoppingItems(); 
+  //add item
+  add.onclick = function() {
+    let id =0;
+    while (shoppingItems.find(el => el.id===id)) id = Math.random()
+    let newItem = {
+      id,
+      itemName: item_name.value,
+      category: category.value,
+      count: count.value,
+      mesure: items.checked ? "szt" : "kg"
+    }
+    shoppingItems.push(newItem)
+    setShoppingItems();
+    console.log(shoppingItems)
+    newItemToList(newItem)
   };
-  
   </script>
 
 </html>
