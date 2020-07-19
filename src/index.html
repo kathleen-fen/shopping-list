@@ -101,7 +101,7 @@
   <script type="text/javascript" src="js/index.min.js"></script>
   <!-- Custom scripts -->
   <script type="text/javascript">
-
+  
   //drag and drop
   document.addEventListener(`dragstart`, (evt) => {
     evt.target.classList.add(`selected`);
@@ -128,6 +128,10 @@
           return;
         }
         currentElement.appendChild(activeElement)
+        //change data
+        shoppingItems.find(el => (el.id == activeElement.id)).category = currentElement.id
+        setShoppingItems()
+
         activeElement = null
         currentElement = null
       })
@@ -147,13 +151,10 @@
     element.innerHTML = itemTmpl.innerHTML;
     element.getElementsByClassName('del')[0].addEventListener("click", (function(i){
       return function(){
-        console.log(i)
-        console.log(event)
         document.getElementById(i).remove()
         event.stopPropagation()
         shoppingItems.splice(shoppingItems.indexOf(shoppingItems.find(el => el.id === i)),1)
         setShoppingItems();
-        console.log(shoppingItems)
       }
     })(item.id))
     let itemName = element.getElementsByClassName('item_name');
@@ -183,7 +184,6 @@
     }
     shoppingItems.push(newItem)
     setShoppingItems();
-    console.log(shoppingItems)
     newItemToList(newItem)
   };
   </script>
