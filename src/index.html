@@ -110,7 +110,7 @@
   document.addEventListener(`dragend`, (evt) => {
     evt.target.classList.remove(`selected`);
   });
-
+  count.value = 1;
   let activeElement = null;
   let currentElement = null;  
 
@@ -121,21 +121,35 @@
       activeElement = document.querySelector(`.selected`);
       currentElement = evt.target;
     })
-
+    
     tasksListElement.addEventListener(`drop`, (evt) => {
-        const isMoveable = activeElement.parentElement !== currentElement;
-        if (!isMoveable) {
-          return;
-        }
-        currentElement.appendChild(activeElement)
+      const currentList = currentElement.closest('.category')
+      const currentItem = currentElement.closest('.item-wrapper')
+      const isMoveable = activeElement.parentElement !== currentList || currentItem !== activeElement
+      if (!isMoveable) {
+        return;
+      }
+      if (currentItem === null)
+      {
+        currentList.appendChild(activeElement)
+      }
+      else {
+        currentList.insertBefore(activeElement,currentItem)
         //change data
-        shoppingItems.find(el => (el.id == activeElement.id)).category = currentElement.id
-        setShoppingItems()
+        let newElement = shoppingItems.find(el => el.id == activeElement.id)
+        let oldIndex = shoppingItems.findIndex(el => el.id == activeElement.id)
+        shoppingItems.splice(oldIndex,1);
+        let newIndex = shoppingItems.findIndex(el => (el.id == currentItem.id))
+        shoppingItems.splice(newIndex,0,newElement)
+      }
+      //change data
+      shoppingItems.find(el => (el.id == activeElement.id)).category = currentList.id
+      setShoppingItems()
 
-        activeElement = null
-        currentElement = null
-      })
+      activeElement = null
+      currentElement = null
     })
+  })
     
   //items array
   let shoppingItems = [];
@@ -143,9 +157,11 @@
   const setShoppingItems = () => {
         localStorage.setItem('shoppingItems', JSON.stringify(shoppingItems));
     };
+    
   //display item  
   const newItemToList = (item) => {
     let element = document.createElement('div');
+    element.classList.add('item-wrapper');
     element.draggable = true;
     element.id = item.id;
     element.innerHTML = itemTmpl.innerHTML;
@@ -153,7 +169,7 @@
       return function(){
         document.getElementById(i).remove()
         event.stopPropagation()
-        shoppingItems.splice(shoppingItems.indexOf(shoppingItems.find(el => el.id === i)),1)
+        shoppingItems.splice(shoppingItems.findIndex(el => el.id === i),1)
         setShoppingItems();
       }
     })(item.id))
@@ -185,6 +201,8 @@
     shoppingItems.push(newItem)
     setShoppingItems();
     newItemToList(newItem)
+    item_name.value = '';
+    count.value = 1;
   };
   </script>
 
